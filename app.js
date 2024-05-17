@@ -4,7 +4,7 @@ const input = document.getElementById('count');
 
 const ctx = canvas.getContext('2d');
 
-const squareSize = 10;
+const squareSize = 20;
 const canvasSize = 600;
 
 var centroids = [];
@@ -62,17 +62,9 @@ function setColorOfCeils() {
         ctx.fillStyle = `rgb(${getRandomColor()}, ${getRandomColor()}, ${getRandomColor()})`;
         for (let ceil of ceils) {
             if (ceil.centroid == centroid) {
-                ctx.fillRect(ceil.x, ceil.y, squareSize, squareSize);
+                ctx.fillRect(ceil.x - squareSize / 2, ceil.y - squareSize / 2, squareSize, squareSize);
             }
         }
-    }
-}
-
-
-function viewCentroids() {
-    ctx.fillStyle = 'red';
-    for (let centroid of centroids) {
-        ctx.fillRect(centroid.x, centroid.y, squareSize + 5, squareSize + 5);
     }
 }
 
@@ -80,9 +72,9 @@ function viewCentroids() {
 searchBtn.onclick = function() {
     generateCentroids();
 
-    let j = 0;
+    const threshould = 0.001;
 
-    while (j != 1000) {
+    while (true) {
         for (let ceil of ceils) {
             for (let centroid of centroids) {
                 let tempDistance = searchDistance(ceil, centroid);
@@ -92,6 +84,8 @@ searchBtn.onclick = function() {
                 }
             }
         }
+
+        let previousCentroids = centroids.map(centroid => ({ x: centroid.x, y: centroid.y }));
 
         for (let centroid of centroids) {
             let averageX = 0;
@@ -113,10 +107,16 @@ searchBtn.onclick = function() {
             centroid.y = averageY;
         }
 
-        j++;
-    }
+        let centroidsStabilized = true;
+        for (let i = 0; i < centroids.length; i++) {
+            if (Math.abs(centroids[i].x - previousCentroids[i].x) > threshould || Math.abs(centroids[i].y - previousCentroids[i].y) > threshould) {
+                centroidsStabilized = false;
+                break;
+            }
+        }
 
-    viewCentroids()
+        if (centroidsStabilized) { break; }
+    }
     setColorOfCeils()
 }
 
