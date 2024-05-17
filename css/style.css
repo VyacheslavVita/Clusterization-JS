@@ -1,0 +1,18 @@
+body {
+    background-color: grey;
+}
+
+.canvas-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.input {
+    margin-bottom: 45px;
+}
+
+.canvas {
+    border: 10px solid black;
+}
