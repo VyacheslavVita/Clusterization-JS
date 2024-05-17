@@ -39,10 +39,13 @@ canvas.addEventListener('click', function(event) {
 
 function generateCentroids() {
     for (let i = 0; i < input.value; i++) {
-        let x = Math.floor(Math.random() * (canvasSize - squareSize));
-        let y = Math.floor(Math.random() * (canvasSize - squareSize));
-
-        centroids.push(new Ceil(x, y));
+        for (let ceil of ceils) {
+            if (ceil.centroid === null) {
+                centroids.push(new Ceil(ceil.x, ceil.y));
+                ceil.centroid = centroids[centroids.length - 1];
+                break;
+            }
+        }
     }
 }
 
@@ -105,6 +108,12 @@ searchBtn.onclick = function() {
 
             centroid.x = averageX;
             centroid.y = averageY;
+
+            for (let ceil of ceils) {
+                if (ceil.centroid == centroid) {
+                    ceil.d = searchDistance(ceil, centroid);
+                }
+            }
         }
 
         let centroidsStabilized = true;
@@ -118,6 +127,7 @@ searchBtn.onclick = function() {
         if (centroidsStabilized) { break; }
     }
     setColorOfCeils()
+    console.log(centroids);
 }
 
 
